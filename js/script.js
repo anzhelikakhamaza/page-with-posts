@@ -1,24 +1,25 @@
 const pizzaType = document.querySelector('.pizzaType');
 const pizzaSize = document.querySelector('.pizzaSize');
-const addIngr = document.querySelector('.additional');
-const button = document.querySelector('.button');
-const totalPrice = document.querySelector('.totalPrice');
-
-const checkboxes = addIngr.querySelectorAll('input[type="checkbox"]');
+const extraIngredients = document.querySelector('.add_extras');
+const orderButton = document.querySelector('.order_button');
+const displayTotalPrice = document.querySelector('.totalPrice');
+const checkboxes = extraIngredients.querySelectorAll('input[type="checkbox"]');
 
 let selectedPizzaType = 0;
 let selectedPizzaSize = 0;
 let selectedIngredients = 0;
 
-pizzaType.addEventListener('change', function () {
+function updatePizzaType() {
 	selectedPizzaType = parseFloat(pizzaType.value);
-});
-
-pizzaSize.addEventListener('change', function () {
+}
+function updatePizzaSize() {
 	selectedPizzaSize = parseFloat(pizzaSize.value);
-});
+}
 
-addIngr.addEventListener('change', function () {
+pizzaType.addEventListener('change', updatePizzaType);
+pizzaSize.addEventListener('change', updatePizzaSize);
+
+extraIngredients.addEventListener('change', function () {
 	let totalIngredients = 0;
 
 	checkboxes.forEach(checkbox => {
@@ -30,8 +31,8 @@ addIngr.addEventListener('change', function () {
 	selectedIngredients = totalIngredients;
 });
 
-button.addEventListener('click', function () {
-	const totalCost = selectedPizzaType + selectedPizzaSize + selectedIngredients;
+orderButton.addEventListener('click', function () {
+	const calculateTotalCost = selectedPizzaType + selectedPizzaSize + selectedIngredients;
 
-	totalPrice.textContent = 'Total: $' + totalCost;
+	displayTotalPrice.textContent = 'Total: $' + calculateTotalCost;
 });

@@ -5,39 +5,64 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-	<h1>Order a Pizza</h1>
+	<div class="menu-container">
+		<h1>Order a Pizza</h1>
 
-	<select name="pizzaType" class="pizzaType">
-		<option value="20">Margarita</option>
-		<option value="23">Pepperoni</option>
-		<option value="18">Hawaian</option>
-	</select>
-	<br>
-	<br>
-	<select name="pizzaSize" class="pizzaSize">
-		<option value="5">Large</option>
-		<option value="3">Middle</option>
-		<option value="1">Small</option>
-	</select>
+		<h2>Menu</h2>
+		<div class="menu_photos-wrapper">
+			<div class="pizza_option">
+				<img src="img/margarita.jpg" alt="">
+				<p>Margarita, $20</p>
+			</div>
+			<div class="pizza_option">
+				<img src="img/pepperoni.jpg" alt="">
+				<p>Pepperoni, $23</p>
+			</div>
+			<div class="pizza_option">
+				<img src="img/hawaiian.jpg" alt="">
+				<p>Hawaiian, $18</p>
+			</div>
+		</div>
 
-	<p class="additional">
-		<input type="checkbox" value="3"> Mashrooms<Br>
-		<input type="checkbox" value="2"> Olives<Br>
-		<input type="checkbox" value="5"> Salami<Br>
-	</p>
+		<div class="pizza_select-wrapper">
+			<select name="pizzaType" class="pizzaType">
+				<option value="0">Select Type</option>
+				<option value="20">Margarita +$20</option>
+				<option value="23">Pepperoni +$23</option>
+				<option value="18">Hawaiian +$18</option>
+			</select>
 
-	<button class="button">order</button>
-	<br>
-	<br>
-	<div class="totalPrice">
-		Total:
-	</div>
+			<select name="pizzaSize" class="pizzaSize">
+				<option value="0">Select Size</option>
+				<option value="5">Large, 25 cm +$5</option>
+				<option value="3">Middle, 30 cm +$3</option>
+				<option value="1">Small, 35 cm +$1</option>
+			</select>
+		</div>
 
-	<script src="script.js"></script>
+		<div class="extras-block">
+			<p class="add_extras">
+				<input type="checkbox" value="3"> Mashrooms +$3<Br>
+				<input type="checkbox" value="2"> Olives +$2<Br>
+				<input type="checkbox" value="5"> Salami +$5<Br>
+			</p>
+		</div>
+
+		<div class="order_button-wrapper">
+			<button class="order_button">See the Price</button>
+		</div>
+
+		<div class="total_price-wrapper">
+			<p class="total_price">
+				Total:
+			</p>
+		</div>
+
+		<script src="js/script.js"></script>
 </body>
 
 </html>
