@@ -1,67 +1,38 @@
-const pizzaPhoto = document.querySelectorAll(".pizza_option");
-const pizzaType = document.querySelector(".pizza_type");
-const pizzaSize = document.querySelector(".pizza_size");
-const extraIngredients = document.querySelector(".add_extras");
-const orderButton = document.querySelector(".order_button");
-const displayTotalPrice = document.querySelector(".total_price");
+const titleInput = document.getElementById("taskInputTitle");
+const descriptionInput = document.getElementById("taskInputDescription");
+const addTaskButton = document.getElementById("addTaskBtn");
 
-const myForm = document.getElementById("myForm");
-const mySelect = document.getElementById("mySelect");
+const taskContainer = document.getElementById("taskList");
 
-const checkboxes = extraIngredients.querySelectorAll('input[type="checkbox"]');
+titleInput.addEventListener("change", saveTitle);
+descriptionInput.addEventListener("change", saveDescription);
 
-pizzaType.addEventListener("change", updatePizzaType);
-pizzaSize.addEventListener("change", updatePizzaSize);
-extraIngredients.addEventListener("change", addExtras);
-orderButton.addEventListener("click", makeOrder);
+addTaskButton.addEventListener("click", addTask);
 
-let selectedPizzaType = 0;
-let selectedPizzaSize = 0;
-let selectedIngredients = 0;
-
-function updatePizzaType() {
-  selectedPizzaType = parseFloat(pizzaType.value);
-}
-function updatePizzaSize() {
-  selectedPizzaSize = parseFloat(pizzaSize.value);
+function saveDescription() {
+  const descriptionValue = descriptionInput.value;
+  localStorage.setItem("savedDescription", descriptionValue);
 }
 
-function addExtras() {
-  let totalIngredients = 0;
-
-  checkboxes.forEach((checkbox) => {
-    if (checkbox.checked) {
-      totalIngredients += parseFloat(checkbox.value);
-    }
-  });
-
-  selectedIngredients = totalIngredients;
+function saveTitle() {
+  const titleValue = titleInput.value;
+  localStorage.setItem("savedTitle", titleValue);
 }
 
-function makeOrder() {
-  const calculateTotalCost =
-    selectedPizzaType + selectedPizzaSize + selectedIngredients;
+function addTask() {
+  const titleValue = titleInput.value;
+  const descriptionValue = descriptionInput.value;
 
-  displayTotalPrice.textContent = "Total: $" + calculateTotalCost;
-}
+  if (titleValue && descriptionValue) {
+    const taskTitleElement = document.createElement("div");
+    taskTitleElement.classList.add("insertedTitle");
+    taskTitleElement.innerHTML = titleValue;
 
-pizzaPhoto.forEach((button) => {
-  button.addEventListener("click", imgClick);
-});
+    const taskDescriptionElement = document.createElement("div");
+    taskDescriptionElement.classList.add("insertedDescription");
+    taskDescriptionElement.innerHTML = descriptionValue;
 
-function imgClick() {
-  const pizzaTypeValue = this.value;
-
-  if (pizzaTypeValue === "margarita") {
-    selectedPizzaType = parseFloat(mySelect.options[1].value);
-    mySelect.value = "20";
-  } else if (pizzaTypeValue === "pepperoni") {
-    selectedPizzaType = parseFloat(mySelect.options[2].value);
-    mySelect.value = "23";
-  } else if (pizzaTypeValue === "hawaiian") {
-    selectedPizzaType = parseFloat(mySelect.options[3].value);
-    mySelect.value = "18";
+    taskContainer.appendChild(taskTitleElement);
+    taskContainer.appendChild(taskDescriptionElement);
   }
-
-  updatePizzaType();
 }

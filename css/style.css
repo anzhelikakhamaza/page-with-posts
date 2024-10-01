@@ -1,46 +1,91 @@
 body {
-	font-family: Arial, sans-serif;
-	background-color: #f8f8f8;
-	max-width: 100vw;
+  background-color: #f4f4f4;
 }
 
-.menu-container {
-	display: flex;
-	flex-direction: column;
+.container {
+  display: flex;
 }
 
-.pizza_option img {
-	max-width: 150px;
+.task-input-container {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: #ffebef;
+  padding: 20px;
+  max-width: 500px;
+  max-height: 200px;
 }
 
-.menu_photos-wrapper {
-	display: flex;
-	gap: 15px;
+#taskInputTitle,
+#taskInputDescription {
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #f8a3c3;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-select,
-.order_button {
-	padding: 10px;
-	margin: 10px 0;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	font-size: 16px;
+#taskInputTitle:focus,
+#taskInputDescription:focus {
+  border-color: #ff6f91;
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 111, 145, 0.5);
 }
 
-.order_button {
-	background-color: #4CAF50;
-	color: white;
-	border: none;
-	cursor: pointer;
+button {
+  padding: 12px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #ff6f91;
+  color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.order_button:hover {
-	background-color: #badfbc;
+button:hover {
+  background-color: #ff4f81;
 }
 
-.total_price {
-	font-size: 18px;
-	font-weight: bold;
-	margin-top: 20px;
-	color: #4CAF50;
+button:active {
+  transform: scale(0.98);
+}
+
+#taskListContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.insertedTitle {
+  background-color: rgba(255, 111, 145, 0.5);
+}
+
+.insertedDescription {
+  background-color: rgba(238, 197, 207, 0.5);
+}
+
+.insertedTitle,
+.insertedDescription {
+  margin-top: 10px;
+  padding: 20px;
+  height: 90px;
+  width: 700px;
+  text-align: justify;
+  word-wrap: break-word;
+}
+
+.insertedTitle::before {
+  content: "Task: ";
+  font-weight: bold;
+}
+
+.insertedDescription::before {
+  content: "Description: ";
+  font-weight: bold;
 }
