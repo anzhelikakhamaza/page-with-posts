@@ -89,3 +89,8 @@ button:active {
   content: "Description: ";
   font-weight: bold;
 }
+
+.deleteTitle::after {
+	content: "Delete";
+  font-weight: bold;
+}
