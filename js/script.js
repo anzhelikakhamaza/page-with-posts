@@ -48,9 +48,10 @@ function drawToDoes() {
   }
 }
 
-function deleteTask(index) {
-  toDos.splice(index, 1);
-
+function deleteTask() {
+  for (let i = toDos.length - 1; i >= 0; i--) {
+    toDos.splice(i, 1);
+  }
   addTask();
 }
 
