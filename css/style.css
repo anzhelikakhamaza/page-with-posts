@@ -78,6 +78,7 @@ button:active {
   width: 700px;
   text-align: justify;
   word-wrap: break-word;
+  visibility: visible;
 }
 
 .insertedTitle::before {
@@ -90,7 +91,19 @@ button:active {
   font-weight: bold;
 }
 
-.deleteTitle::after {
-	content: "Delete";
-  font-weight: bold;
+.editTask {
+  margin-left: 20px;
 }
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.pagination a:hover {
+  background-color: #ddd;
+}
+
