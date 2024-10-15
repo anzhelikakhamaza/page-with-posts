@@ -18,10 +18,23 @@
             placeholder="Add Description"
             maxlength="250"
           ></textarea>
+          <select name="priotity" id="priotitySelect">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
           <button id="addTaskBtn">Add a Task</button>
         </div>
 
         <div id="taskListContainer">
+          <label for=""
+            >Sort
+            <select name="priotitySort" id="priotitySort">
+              <option value="0">None</option>
+              <option value="1">Highest to Lowest</option>
+              <option value="2">Lowest to Highest</option>
+            </select></label
+          >
           <div id="taskList"></div>
           <div class="pagination">
             <a href="#">&laquo;</a>

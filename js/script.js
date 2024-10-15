@@ -1,10 +1,14 @@
 const titleInput = document.getElementById("taskInputTitle");
 const descriptionInput = document.getElementById("taskInputDescription");
 const addTaskButton = document.getElementById("addTaskBtn");
+const sortPriorities = document.getElementById("priotitySort");
+const selectPriotity = document.getElementById("priotitySelect");
 
 const taskContainer = document.getElementById("taskList");
 
 addTaskButton.addEventListener("click", addTask);
+
+sortPriorities.addEventListener("click", sortingTasks);
 
 let toDos = [];
 
@@ -12,6 +16,7 @@ function addTask() {
   const newToDo = {
     title: titleInput.value,
     description: descriptionInput.value,
+    priority: selectPriotity.value,
   };
 
   toDos.push(newToDo);
@@ -20,10 +25,17 @@ function addTask() {
 
   drawToDos();
   setToDosToLocalStorage();
+
+  titleInput.value = "";
+  descriptionInput.value = "";
 }
 
 function drawToDos() {
   for (let i = 0; i < toDos.length; i++) {
+    const selectWrapper = document.createElement("div");
+    selectWrapper.classList.add("selectedPriority");
+    selectWrapper.innerHTML = toDos[i].priority;
+
     const titleWrapper = document.createElement("div");
     titleWrapper.classList.add("insertedTitle");
     titleWrapper.innerHTML = toDos[i].title;
@@ -40,19 +52,20 @@ function drawToDos() {
     editButtonWrapper.classList.add("editButton");
     editButtonWrapper.innerText = "Edit";
 
-    deleteButtonWrapper.setAttribute("id", i);
-    editButtonWrapper.setAttribute("id", i);
+    const checkboxWrapper = document.createElement("input");
+    checkboxWrapper.type = "checkbox";
+    checkboxWrapper.classList.add("checkbox");
 
-    deleteButtonWrapper.addEventListener("click", function () {
-      deleteTask(i);
-    });
+    deleteButtonWrapper.addEventListener("click", () => deleteTask(i));
+    editButtonWrapper.addEventListener("click", () => editTask(i));
+    checkboxWrapper.addEventListener("click", () => checkBox(i));
 
-    editButtonWrapper.addEventListener("click", function () {
-      editTask(i);
-    });
+    taskContainer.appendChild(checkboxWrapper);
+    taskContainer.appendChild(selectWrapper);
 
     taskContainer.appendChild(titleWrapper);
     taskContainer.appendChild(descriptionWrapper);
+
     taskContainer.appendChild(editButtonWrapper);
     taskContainer.appendChild(deleteButtonWrapper);
   }
@@ -80,43 +93,72 @@ function getToDosToLocalStorage() {
     drawToDos();
   }
 }
-
 window.onload = getToDosToLocalStorage;
 
 function editTask(taskId) {
   let currentTask = toDos[taskId];
 
-  let insertedTitle = document.getElementsByClassName("insertedTitle")[taskId];
-  let insertedDescription = document.getElementsByClassName(
-    "insertedDescription"[taskId]
-  );
+  titleInput.value = currentTask.title;
+  descriptionInput.value = currentTask.description;
 
-  insertedTitle[currentTask].style.visibility = "hidden";
-  insertedDescription[currentTask].style.visibility = "hidden";
-
-  const editTitleWrapper = document.createElement("textarea");
-  editTitleWrapper.classList.add("editTitle");
-  editTitleWrapper.value = currentTask.title;
-
-  const editDescriptionWrapper = document.createElement("textarea");
-  editDescriptionWrapper.classList.add("editDescription");
-  editDescriptionWrapper.value = currentTask.description;
-
+  const saveButtonWrapper = document.querySelector(".task-input-container");
   const saveButton = document.createElement("button");
   saveButton.innerText = "Save";
+  saveButtonWrapper.appendChild(saveButton);
+
+  addTaskButton.style.display = "none";
 
   saveButton.addEventListener("click", function () {
-    toDos[taskId].title = editTitleWrapper.value;
-    toDos[taskId].description = editDescriptionWrapper.value;
+    toDos[taskId].title = titleInput.value;
+    toDos[taskId].description = descriptionInput.value;
     setToDosToLocalStorage();
 
     taskContainer.replaceChildren();
     drawToDos();
+
+    saveButton.style.display = "none";
+    titleInput.value = "";
+    descriptionInput.value = "";
+
+    addTaskButton.style.display = "block";
   });
+}
 
-  let parentElement = insertedTitle.parentNode;
+function checkBox(i) {
+  let titleWrapper = document.getElementsByClassName("insertedTitle")[i];
+  let descriptionWrapper = document.getElementsByClassName(
+    "insertedDescription"
+  )[i];
+  let deleteButtonWrapper = document.getElementsByClassName("deleteTask")[i];
+  let editButtonWrapper = document.getElementsByClassName("editButton")[i];
 
-  parentElement.insertBefore(editTitleWrapper, insertedTitle);
-  parentElement.insertBefore(editDescriptionWrapper, insertedDescription);
-  parentElement.insertBefore(saveButton, insertedDescription);
+  titleWrapper.classList.toggle("completed");
+  descriptionWrapper.classList.toggle("completed");
+  deleteButtonWrapper.classList.toggle("button-disabled");
+  editButtonWrapper.classList.toggle("button-disabled");
+
+  setToDosToLocalStorage();
+}
+
+function sortingTasks() {
+  const priorityObject = {
+    high: 1,
+    medium: 2,
+    low: 3,
+  };
+
+  if (sortPriorities.value === "1") {
+    toDos.sort(
+      (a, b) => priorityObject[a.priority] - priorityObject[b.priority]
+    );
+  } else if (sortPriorities.value === "2") {
+    toDos.sort(
+      (a, b) => priorityObject[b.priority] - priorityObject[a.priority]
+    );
+  }
+
+  setToDosToLocalStorage();
+
+  taskContainer.replaceChildren();
+  drawToDos();
 }

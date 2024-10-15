@@ -1,109 +1,190 @@
 body {
-  background-color: #f4f4f4;
+  font-family: "Roboto", sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
   display: flex;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 
 .task-input-container {
+  width: 35%;
   display: flex;
   flex-direction: column;
-  margin: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  background-color: #ffebef;
+  gap: 15px;
   padding: 20px;
-  max-width: 500px;
-  max-height: 200px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #taskInputTitle,
 #taskInputDescription {
-  padding: 15px;
-  margin-bottom: 15px;
-  border: 1px solid #f8a3c3;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
 #taskInputTitle:focus,
 #taskInputDescription:focus {
-  border-color: #ff6f91;
   outline: none;
-  box-shadow: 0 0 5px rgba(255, 111, 145, 0.5);
+  border-color: #007bff;
+  box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.4);
 }
 
-button {
-  padding: 12px;
-  margin: 5px 0;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #ff6f91;
+#addTaskBtn {
+  padding: 10px 15px;
+  background-color: #007bff;
   color: white;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #ff4f81;
-}
-
-button:active {
-  transform: scale(0.98);
+#addTaskBtn:hover {
+  background-color: #0056b3;
 }
 
 #taskListContainer {
+  width: 65%;
   display: flex;
   flex-direction: column;
   padding: 20px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.insertedTitle {
-  background-color: rgba(255, 111, 145, 0.5);
+#taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.insertedDescription {
-  background-color: rgba(238, 197, 207, 0.5);
+.task {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.task:hover {
+  transform: translateY(-3px);
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.selectedPriority {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #007bff;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.task.focused {
+  background-color: #d1ecf1;
 }
 
 .insertedTitle,
 .insertedDescription {
-  margin-top: 10px;
-  padding: 20px;
-  height: 90px;
-  width: 700px;
-  text-align: justify;
-  word-wrap: break-word;
-  visibility: visible;
+  margin: 0;
 }
 
-.insertedTitle::before {
-  content: "Task: ";
+.insertedTitle {
   font-weight: bold;
 }
 
-.insertedDescription::before {
-  content: "Description: ";
-  font-weight: bold;
+.editButton,
+.deleteTask {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.editTask {
-  margin-left: 20px;
+.editButton {
+  background-color: #ff9800;
+  color: white;
+}
+
+.editButton:hover {
+  background-color: #e68900;
+}
+
+.deleteTask {
+  background-color: #f44336;
+  color: white;
+}
+
+.deleteTask:hover {
+  background-color: #d32f2f;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.button-disabled {
+  background-color: grey;
+}
+
+label {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .pagination a {
-  color: black;
-  float: left;
-  padding: 8px 16px;
+  margin: 0 5px;
+  padding: 10px 15px;
+  background-color: #ffffff;
+  color: #007bff;
   text-decoration: none;
-  transition: background-color 0.3s;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
 .pagination a:hover {
-  background-color: #ddd;
+  background-color: #007bff;
+  color: white;
 }
-
