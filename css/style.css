@@ -1,14 +1,14 @@
 body {
   font-family: "Roboto", sans-serif;
   background-color: #eae7dc;
-  color: #4a4a4a;
+  color: #000000;
   margin: 0;
   padding: 0;
 }
 
 nav {
-	padding-top: 10px;
-	padding-left: 10px;
+  padding-top: 10px;
+  padding-left: 10px;
 }
 
 #toggle {
@@ -86,7 +86,7 @@ nav {
 
 #addTaskBtn {
   padding: 10px 15px;
-  background-color: #a0b9b5;
+  background-color: #008e77;
   color: white;
   border: none;
   border-radius: 4px;
@@ -96,7 +96,7 @@ nav {
 }
 
 #addTaskBtn:hover {
-  background-color: #7a9c98;
+  background-color: #7a9c80;
 }
 
 #taskListContainer {

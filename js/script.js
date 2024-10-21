@@ -109,7 +109,7 @@ function loadTodosFromLocalStorage() {
 
   if (savedData) {
     todos = JSON.parse(savedData);
-    originalTodos = [...todos];
+    originalTodos = todos.slice();
 
     taskContainer.replaceChildren();
     renderTodos();
@@ -168,7 +168,7 @@ function sortTasks() {
   let selectedPriority = prioritySort.value.toLowerCase();
 
   if (selectedPriority === "none") {
-    todos = [...originalTodos];
+    todos = todos.slice();
   } else {
     todos.sort((a, b) => (a.priority === selectedPriority ? -1 : 1));
   }
