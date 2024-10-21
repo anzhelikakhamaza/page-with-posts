@@ -1,120 +1,141 @@
 const titleInput = document.getElementById("taskInputTitle");
 const descriptionInput = document.getElementById("taskInputDescription");
 const addTaskButton = document.getElementById("addTaskBtn");
-const sortPriorities = document.getElementById("priotitySort");
-const selectPriotity = document.getElementById("priotitySelect");
-
+const prioritySort = document.getElementById("prioritySort");
+const prioritySelect = document.getElementById("prioritySelect");
 const taskContainer = document.getElementById("taskList");
+const container = document.getElementById("container");
+const toggle = document.getElementById("toggle");
 
 addTaskButton.addEventListener("click", addTask);
+prioritySort.addEventListener("change", sortTasks);
+toggle.addEventListener("change", switchToggle);
 
-sortPriorities.addEventListener("click", sortingTasks);
+let todos = [];
+let originalTodos = [];
 
-let toDos = [];
+function saveTodosToLocalStorage() {
+  localStorage.setItem("todos", JSON.stringify(todos));
+}
 
-function addTask() {
-  const newToDo = {
-    title: titleInput.value,
-    description: descriptionInput.value,
-    priority: selectPriotity.value,
-  };
-
-  toDos.push(newToDo);
+function updateTheArray() {
+  saveTodosToLocalStorage();
 
   taskContainer.replaceChildren();
+  renderTodos();
+}
 
-  drawToDos();
-  setToDosToLocalStorage();
+function switchToggle() {
+  document.body.classList.toggle("darkTheme", toggle.checked);
+}
+
+function addTask() {
+  const newTodo = {
+    title: titleInput.value,
+    description: descriptionInput.value,
+    priority: prioritySelect.value,
+    isChecked: false,
+  };
+
+  todos.push(newTodo);
+  originalTodos = todos.slice();
+
+  updateTheArray();
 
   titleInput.value = "";
   descriptionInput.value = "";
 }
 
-function drawToDos() {
-  for (let i = 0; i < toDos.length; i++) {
-    const selectWrapper = document.createElement("div");
-    selectWrapper.classList.add("selectedPriority");
-    selectWrapper.innerHTML = toDos[i].priority;
+function createElement(tag, className = "", content = "") {
+  const element = document.createElement(tag);
+  if (className) element.classList.add(className);
+  if (content) element.innerHTML = content;
+  return element;
+}
 
-    const titleWrapper = document.createElement("div");
-    titleWrapper.classList.add("insertedTitle");
-    titleWrapper.innerHTML = toDos[i].title;
+function renderTodos() {
+  for (let i = 0; i < todos.length; i++) {
+    const priorityWrapper = createElement(
+      "div",
+      "selectedPriority",
+      todos[i].priority
+    );
+    const titleWrapper = createElement("div", "insertedTitle", todos[i].title);
+    const descriptionWrapper = createElement(
+      "div",
+      "insertedDescription",
+      todos[i].description
+    );
+    const deleteButton = createElement("button", "deleteTask", "Delete");
+    const editButton = createElement("button", "editButton", "Edit");
 
-    const descriptionWrapper = document.createElement("div");
-    descriptionWrapper.classList.add("insertedDescription");
-    descriptionWrapper.innerHTML = toDos[i].description;
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.classList.add("checkbox");
+    checkbox.checked = todos[i].isChecked;
 
-    const deleteButtonWrapper = document.createElement("button");
-    deleteButtonWrapper.classList.add("deleteTask");
-    deleteButtonWrapper.innerText = "Delete";
+    if (todos[i].isChecked) {
+      checkbox.setAttribute("checked", "checked");
 
-    const editButtonWrapper = document.createElement("button");
-    editButtonWrapper.classList.add("editButton");
-    editButtonWrapper.innerText = "Edit";
+      titleWrapper.classList.toggle("completed");
+      descriptionWrapper.classList.toggle("completed");
+      deleteButton.classList.toggle("button-disabled");
+      editButton.classList.toggle("button-disabled");
+    }
 
-    const checkboxWrapper = document.createElement("input");
-    checkboxWrapper.type = "checkbox";
-    checkboxWrapper.classList.add("checkbox");
+    deleteButton.addEventListener("click", () => deleteTask(i));
+    editButton.addEventListener("click", () => editTask(i));
+    checkbox.addEventListener("click", () => toggleTaskCompletion(i));
 
-    deleteButtonWrapper.addEventListener("click", () => deleteTask(i));
-    editButtonWrapper.addEventListener("click", () => editTask(i));
-    checkboxWrapper.addEventListener("click", () => checkBox(i));
-
-    taskContainer.appendChild(checkboxWrapper);
-    taskContainer.appendChild(selectWrapper);
-
-    taskContainer.appendChild(titleWrapper);
-    taskContainer.appendChild(descriptionWrapper);
-
-    taskContainer.appendChild(editButtonWrapper);
-    taskContainer.appendChild(deleteButtonWrapper);
+    taskContainer.append(
+      checkbox,
+      priorityWrapper,
+      titleWrapper,
+      descriptionWrapper,
+      editButton,
+      deleteButton
+    );
   }
 }
 
 function deleteTask(taskId) {
-  toDos.splice(taskId, 1);
+  todos.splice(taskId, 1);
 
-  setToDosToLocalStorage();
-
-  taskContainer.replaceChildren();
-  drawToDos();
+  updateTheArray();
 }
 
-function setToDosToLocalStorage() {
-  localStorage.setItem("toDos", JSON.stringify(toDos));
-}
+function loadTodosFromLocalStorage() {
+  let savedData = localStorage.getItem("todos");
 
-function getToDosToLocalStorage() {
-  let enteredData = localStorage.getItem("toDos");
+  if (savedData) {
+    todos = JSON.parse(savedData);
+    originalTodos = [...todos];
 
-  if (enteredData) {
-    toDos = JSON.parse(enteredData);
     taskContainer.replaceChildren();
-    drawToDos();
+    renderTodos();
   }
 }
-window.onload = getToDosToLocalStorage;
+
+window.onload = loadTodosFromLocalStorage;
 
 function editTask(taskId) {
-  let currentTask = toDos[taskId];
+  let currentTask = todos[taskId];
 
   titleInput.value = currentTask.title;
   descriptionInput.value = currentTask.description;
 
-  const saveButtonWrapper = document.querySelector(".task-input-container");
+  const inputContainer = document.querySelector(".task-input-container");
   const saveButton = document.createElement("button");
   saveButton.innerText = "Save";
-  saveButtonWrapper.appendChild(saveButton);
+  inputContainer.appendChild(saveButton);
 
   addTaskButton.style.display = "none";
 
   saveButton.addEventListener("click", function () {
-    toDos[taskId].title = titleInput.value;
-    toDos[taskId].description = descriptionInput.value;
-    setToDosToLocalStorage();
+    todos[taskId].title = titleInput.value;
+    todos[taskId].description = descriptionInput.value;
 
-    taskContainer.replaceChildren();
-    drawToDos();
+    updateTheArray();
 
     saveButton.style.display = "none";
     titleInput.value = "";
@@ -124,41 +145,33 @@ function editTask(taskId) {
   });
 }
 
-function checkBox(i) {
-  let titleWrapper = document.getElementsByClassName("insertedTitle")[i];
+function toggleTaskCompletion(index) {
+  let currentTodo = todos[index];
+  currentTodo.isChecked = !currentTodo.isChecked;
+
+  let titleWrapper = document.getElementsByClassName("insertedTitle")[index];
   let descriptionWrapper = document.getElementsByClassName(
     "insertedDescription"
-  )[i];
-  let deleteButtonWrapper = document.getElementsByClassName("deleteTask")[i];
-  let editButtonWrapper = document.getElementsByClassName("editButton")[i];
+  )[index];
+  let deleteButton = document.getElementsByClassName("deleteTask")[index];
+  let editButton = document.getElementsByClassName("editButton")[index];
 
   titleWrapper.classList.toggle("completed");
   descriptionWrapper.classList.toggle("completed");
-  deleteButtonWrapper.classList.toggle("button-disabled");
-  editButtonWrapper.classList.toggle("button-disabled");
+  deleteButton.classList.toggle("button-disabled");
+  editButton.classList.toggle("button-disabled");
 
-  setToDosToLocalStorage();
+  saveTodosToLocalStorage();
 }
 
-function sortingTasks() {
-  const priorityObject = {
-    high: 1,
-    medium: 2,
-    low: 3,
-  };
+function sortTasks() {
+  let selectedPriority = prioritySort.value.toLowerCase();
 
-  if (sortPriorities.value === "1") {
-    toDos.sort(
-      (a, b) => priorityObject[a.priority] - priorityObject[b.priority]
-    );
-  } else if (sortPriorities.value === "2") {
-    toDos.sort(
-      (a, b) => priorityObject[b.priority] - priorityObject[a.priority]
-    );
+  if (selectedPriority === "none") {
+    todos = [...originalTodos];
+  } else {
+    todos.sort((a, b) => (a.priority === selectedPriority ? -1 : 1));
   }
 
-  setToDosToLocalStorage();
-
-  taskContainer.replaceChildren();
-  drawToDos();
+  updateTheArray();
 }
