@@ -1,32 +1,45 @@
+// DOM Elements
 const titleInput = document.getElementById("taskInputTitle");
 const descriptionInput = document.getElementById("taskInputDescription");
 const addTaskButton = document.getElementById("addTaskBtn");
 const prioritySort = document.getElementById("prioritySort");
 const prioritySelect = document.getElementById("prioritySelect");
 const taskContainer = document.getElementById("taskList");
-const container = document.getElementById("container");
-const toggle = document.getElementById("toggle");
+const toggle = document.getElementById("toggle-checkbox");
 
-addTaskButton.addEventListener("click", addTask);
+// Event Listeners
+titleInput.addEventListener("input", disableAddTaskButton);
+addTaskButton.addEventListener("click", validateValue);
 prioritySort.addEventListener("change", sortTasks);
 toggle.addEventListener("change", switchToggle);
 
+// Variables
 let todos = [];
 let originalTodos = [];
+let currentTaskID = 0;
 
-function saveTodosToLocalStorage() {
-  localStorage.setItem("todos", JSON.stringify(todos));
+// Functions
+function disableAddTaskButton() {
+  if (titleInput.validity.tooShort) {
+    titleInput.setCustomValidity(
+      `Title should be at least ${titleInput.minLength} characters; you entered ${titleInput.value.length}.`
+    );
+  } else {
+    titleInput.setCustomValidity("");
+  }
+
+  titleInput.reportValidity();
 }
 
-function updateTheArray() {
-  saveTodosToLocalStorage();
+function validateValue(event) {
+  disableAddTaskButton();
 
-  taskContainer.replaceChildren();
-  renderTodos();
-}
+  if (!titleInput.validity.valid) {
+    event.preventDefault();
+    return;
+  }
 
-function switchToggle() {
-  document.body.classList.toggle("darkTheme", toggle.checked);
+  addTask();
 }
 
 function addTask() {
@@ -38,22 +51,55 @@ function addTask() {
   };
 
   todos.push(newTodo);
-  originalTodos = todos.slice();
+  originalTodos = [...todos];
 
   updateTheArray();
+  hideSorting();
 
   titleInput.value = "";
   descriptionInput.value = "";
 }
 
-function createElement(tag, className = "", content = "") {
+function updateTheArray() {
+  saveTodosToLocalStorage();
+  renderTodos();
+}
+
+function saveTodosToLocalStorage() {
+  localStorage.setItem("todos", JSON.stringify(todos));
+  localStorage.setItem(
+    "theme",
+    document.body.classList.contains("darkTheme" ? "darkTheme" : "light")
+  );
+}
+
+function loadTodosFromLocalStorage() {
+  let savedData = localStorage.getItem("todos");
+  let savedTheme = localStorage.getItem("theme");
+
+  if (savedData) {
+    todos = JSON.parse(savedData);
+    originalTodos = [...todos];
+
+    renderTodos();
+  }
+
+  if (savedTheme) {
+    renderTodos();
+  }
+}
+
+function createElement(tag, className = "", content = "", type = "") {
   const element = document.createElement(tag);
   if (className) element.classList.add(className);
   if (content) element.innerHTML = content;
+  if (type) element.type = type;
   return element;
 }
 
 function renderTodos() {
+  taskContainer.replaceChildren();
+
   for (let i = 0; i < todos.length; i++) {
     const priorityWrapper = createElement(
       "div",
@@ -68,19 +114,19 @@ function renderTodos() {
     );
     const deleteButton = createElement("button", "deleteTask", "Delete");
     const editButton = createElement("button", "editButton", "Edit");
+    const checkbox = createElement("input", "checkbox", "", "checkbox");
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.classList.add("checkbox");
     checkbox.checked = todos[i].isChecked;
 
     if (todos[i].isChecked) {
       checkbox.setAttribute("checked", "checked");
-
-      titleWrapper.classList.toggle("completed");
-      descriptionWrapper.classList.toggle("completed");
-      deleteButton.classList.toggle("button-disabled");
-      editButton.classList.toggle("button-disabled");
+      toggleTaskCompletionStyles(
+        titleWrapper,
+        descriptionWrapper,
+        deleteButton,
+        editButton
+      );
+      editButton.disabled = true;
     }
 
     deleteButton.addEventListener("click", () => deleteTask(i));
@@ -100,25 +146,11 @@ function renderTodos() {
 
 function deleteTask(taskId) {
   todos.splice(taskId, 1);
-
   updateTheArray();
 }
 
-function loadTodosFromLocalStorage() {
-  let savedData = localStorage.getItem("todos");
-
-  if (savedData) {
-    todos = JSON.parse(savedData);
-    originalTodos = todos.slice();
-
-    taskContainer.replaceChildren();
-    renderTodos();
-  }
-}
-
-window.onload = loadTodosFromLocalStorage;
-
 function editTask(taskId) {
+  currentTaskID = taskId;
   let currentTask = todos[taskId];
 
   titleInput.value = currentTask.title;
@@ -130,20 +162,22 @@ function editTask(taskId) {
   inputContainer.appendChild(saveButton);
 
   addTaskButton.style.display = "none";
+}
 
-  saveButton.addEventListener("click", function () {
-    todos[taskId].title = titleInput.value;
-    todos[taskId].description = descriptionInput.value;
+saveButton.addEventListener("click", function () {
+  if (currentTaskID !== null || currentTaskID !== undefined) {
+    todos[currentTaskID].title = titleInput.value;
+    todos[currentTaskID].description = descriptionInput.value;
 
     updateTheArray();
 
-    saveButton.style.display = "none";
+    saveButton.remove();
     titleInput.value = "";
     descriptionInput.value = "";
 
     addTaskButton.style.display = "block";
-  });
-}
+  }
+});
 
 function toggleTaskCompletion(index) {
   let currentTodo = todos[index];
@@ -156,22 +190,47 @@ function toggleTaskCompletion(index) {
   let deleteButton = document.getElementsByClassName("deleteTask")[index];
   let editButton = document.getElementsByClassName("editButton")[index];
 
+  toggleTaskCompletionStyles(
+    titleWrapper,
+    descriptionWrapper,
+    deleteButton,
+    editButton
+  );
+  saveTodosToLocalStorage();
+}
+
+function toggleTaskCompletionStyles(
+  titleWrapper,
+  descriptionWrapper,
+  deleteButton,
+  editButton
+) {
   titleWrapper.classList.toggle("completed");
   descriptionWrapper.classList.toggle("completed");
   deleteButton.classList.toggle("button-disabled");
   editButton.classList.toggle("button-disabled");
-
-  saveTodosToLocalStorage();
 }
 
 function sortTasks() {
   let selectedPriority = prioritySort.value.toLowerCase();
 
   if (selectedPriority === "none") {
-    todos = todos.slice();
+    originalTodos = [...todos];
   } else {
     todos.sort((a, b) => (a.priority === selectedPriority ? -1 : 1));
   }
 
   updateTheArray();
 }
+
+function switchToggle() {
+  document.body.classList.toggle("darkTheme", toggle.checked);
+}
+
+function hideSorting() {
+  prioritySort.style.display =
+    prioritySort.style.display === "none" ? "block" : "none";
+}
+
+// Load todos on page load
+window.onload = loadTodosFromLocalStorage;
